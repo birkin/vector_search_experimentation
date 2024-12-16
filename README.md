@@ -73,6 +73,13 @@ I'm going to go through a great writeup about using an extension to sqlite that 
 
 ---
 
+
+## Getting starting data
+
+hmm... there's not a unified Theses and Dissertations collection, rather, it starts by discipline, then within that there's a Theses and Dissertations collection.
+
+I probably could do a solr search to sort of unify all of theses, but for now will just focus on AmCiv theses and dissertations, from [here](https://repository.library.brown.edu/studio/collections/bdr:en3cza8s/).
+
 (end of file)
 
 ---
