@@ -9,6 +9,7 @@ on this page...
 - out of scope
 - concept overview
 - plan
+- work
 
 ---
 
@@ -74,7 +75,10 @@ I'm going to go through a great writeup about using an extension to sqlite that 
 ---
 
 
-## Getting starting data
+## Work
+
+
+### Get starting data
 
 hmm... there's not a unified Theses and Dissertations collection, rather, it starts by discipline, then within that there's a Theses and Dissertations collection.
 
@@ -82,7 +86,17 @@ I probably could do a solr search to sort of unify all of theses, but for now wi
 
 Ok, for now I'll just start with the abstracts (and titles), since one query returns those.
 
-Code [here](https://github.com/birkin/vector_search_experimentation/blob/main/get_starting_data.py).
+Code [here](https://github.com/birkin/vector_search_experimentation/blob/main/a__get_starting_data.py).
+
+---
+
+### Populate the sqlite-db
+
+Code [here](https://github.com/birkin/vector_search_experimentation/blob/main/b__populate_db.py).
+
+As an aside, a while ago I watched a video of someone doing something wih sqlite, and the person was able to click right on the db-file and view it from vscode. 
+
+Just did an extension-search, and there are a _bunch_ of such extensions. I just installed the free [sqlite viewer](https://marketplace.visualstudio.com/items?itemName=qwtel.sqlite-viewer), and despite it being read-only and having a subtle ad, am enjoying being able to easily skim the contents of the db.
 
 ---
 
