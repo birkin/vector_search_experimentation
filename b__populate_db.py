@@ -81,53 +81,6 @@ def build_records(api_data: dict) -> list:
     ## end def build_records()
 
 
-# def create_db_and_table() -> bool:
-#     """
-#     Creates db and table if it does not exist.
-#     Fields will be: ['abstract', 'json_uri', 'keywords', 'object_type', 'pid', 'primary_title', 'uri']
-#     The primary key will be 'pid', which is a string.
-#     All the other fields are strings.
-#     The field 'keywords' is a JSON list of strings, so will be stored as a JSON field.
-#     Returns True if the table was created, False otherwise.
-#     """
-#     log.debug('starting create_db_and_table()')
-#     db_path = pathlib.Path(DB_PATH)
-#     log.debug(f'db_path: {db_path}')
-#     db_path_absolute = db_path.resolve()
-#     log.debug(f'db_path_absolute: {db_path_absolute}')
-#     db_path_absolute.parent.mkdir(parents=True, exist_ok=True)
-#     conn = sqlite3.connect(db_path_absolute)
-#     cursor = conn.cursor()
-#     ## check if table exists ----------------------------------------
-#     cursor.execute("""
-#         SELECT name FROM sqlite_master
-#         WHERE type='table' AND name='amciv_thesdiss_collection'
-#     """)
-#     table_exists = cursor.fetchone() is not None
-#     if table_exists:
-#         log.debug('table already exists.')
-#         conn.close()
-#         return False  # Table was not created
-#     ## otherwise reate the table ------------------------------------
-#     log.debug('Creating table...')
-#     cursor.execute("""
-#         CREATE TABLE amciv_thesdiss_collection (
-#             abstract TEXT,
-#             dateCreated TEXT,
-#             json_uri TEXT,
-#             keywords JSON,
-#             object_type TEXT,
-#             pid TEXT PRIMARY KEY,
-#             primary_title TEXT,
-#             uri TEXT
-#         )
-#     """)
-#     conn.commit()
-#     conn.close()
-#     log.debug('table created.')
-#     return True
-
-
 def create_db_and_table() -> bool:
     """
     Creates db and table if it does not exist.

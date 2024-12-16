@@ -96,7 +96,18 @@ Code [here](https://github.com/birkin/vector_search_experimentation/blob/main/b_
 
 As an aside, a while ago I watched a video of someone doing something wih sqlite, and the person was able to click right on the db-file and view it from vscode. 
 
-Just did an extension-search, and there are a _bunch_ of such extensions. I just installed the free [sqlite viewer](https://marketplace.visualstudio.com/items?itemName=qwtel.sqlite-viewer), and despite it being read-only and having a subtle ad, am enjoying being able to easily skim the contents of the db.
+Just did an extension-search, and there are a _bunch_ of such extensions. I just installed the free [SQLite Viewer](https://marketplace.visualstudio.com/items?itemName=qwtel.sqlite-viewer), and despite it being read-only and having a subtle ad, am enjoying being able to easily skim the contents of the db.
+
+---
+
+
+### Build the full-text search FTS5 table
+
+FTS5 is an extension for SQLite that provides full-text search capabilities ("FTS" for "full-text-searching"; the "5" is the fifth-iteration of the tool).
+
+In my iterative fashion, I'll copy the original table and then perform the update.
+
+
 
 ---
 
