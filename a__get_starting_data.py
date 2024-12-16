@@ -1,3 +1,4 @@
+import json
 import logging
 import pathlib
 import pprint
@@ -20,7 +21,7 @@ logging.getLogger('httpcore').setLevel(logging.WARNING)
 ## constants --------------------------------------------------------
 AMCIV_THESDISS_COLLECTION_ID: str = 'bdr:tkz6xrdc'
 BDR_COLLECTION_API_ROOT: str = 'https://repository.library.brown.edu/api/collections/'
-STARTING_DATA_DIR: str = '../data/'
+OUTPUT_DATA_DIR: str = '../data/'
 
 
 def get_data() -> None:
@@ -32,8 +33,6 @@ def get_data() -> None:
     ## grab data ----------------------------------------------------
     amciv_collection_api_url: str = f'{BDR_COLLECTION_API_ROOT}{AMCIV_THESDISS_COLLECTION_ID}/'
     log.debug(f'amciv_collection_api_url: {amciv_collection_api_url}')
-    output_path = pathlib.Path(STARTING_DATA_DIR) / 'amciv_thesdiss_collection.json'
-    log.debug(f'output_path: {output_path}')
     jdict: dict = httpx.get(amciv_collection_api_url).json()
     ## inspect it ---------------------------------------------------
     sorted_collection_keys = sorted(jdict.keys())
@@ -44,8 +43,15 @@ def get_data() -> None:
     sorted_doc_keys = sorted(doc_example.keys())
     log.debug(f'sorted_doc_keys: {sorted_doc_keys}')
     log.debug(f'doc_example: {pprint.pformat(doc_example)}')
-    ## write it to file ---------------------------------------------
-    # (I'll hold off on the write until I see what I actually need.)
+    ## write data to file -------------------------------------------
+    output_path = pathlib.Path(OUTPUT_DATA_DIR) / 'amciv_thesdiss_collection.json'
+    log.debug(f'output_path: {output_path}')
+    output_absolute_path = output_path.resolve()
+    log.debug(f'output_absolute_path: {output_absolute_path}')
+    output_absolute_path.parent.mkdir(parents=True, exist_ok=True)
+    json_data: str = json.dumps(jdict, sort_keys=True, indent=2)
+    with open(output_absolute_path, 'w') as f:
+        f.write(json_data)
     return
 
 
