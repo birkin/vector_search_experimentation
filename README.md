@@ -40,7 +40,7 @@ The process I'll go through, using a model to turn text into numbers representin
 
 ### use-case 
 
-I gave the use-case reason above, that common key-word searches on "climate change" won't return documents about "global warming". Solr, the indexer we use for many search applications, does have smarts: it'll break out tokens and lemmatize, so that a search on "jumping" will find relevant documents that don't contain the word "jumping", but do contain the words "jump", "jumped", or "jumping". But it won't return items that are about "hopping".
+I gave the use-case reason above, that common key-word searches on "climate change" won't return documents about "global warming". Solr, the indexer we use for many search applications, does have smarts: it'll break out tokens and lemmatize, so that a search on "jumping" will find relevant documents that don't contain the word "jumping", but do contain the words "jump", "jumped", or "jumps". But it won't return items that are about "hopping" or "leaping".
 
 
 ### embeddings
@@ -79,6 +79,12 @@ I'm going to go through a great writeup about using an extension to sqlite that 
 hmm... there's not a unified Theses and Dissertations collection, rather, it starts by discipline, then within that there's a Theses and Dissertations collection.
 
 I probably could do a solr search to sort of unify all of theses, but for now will just focus on AmCiv theses and dissertations, from [here](https://repository.library.brown.edu/studio/collections/bdr:en3cza8s/).
+
+Ok, for now I'll just start with the abstracts (and titles), since one query returns those.
+
+Code [here](https://github.com/birkin/vector_search_experimentation/blob/main/get_starting_data.py).
+
+---
 
 (end of file)
 

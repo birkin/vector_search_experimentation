@@ -44,6 +44,8 @@ def get_data() -> None:
     sorted_doc_keys = sorted(doc_example.keys())
     log.debug(f'sorted_doc_keys: {sorted_doc_keys}')
     log.debug(f'doc_example: {pprint.pformat(doc_example)}')
+    ## write it to file ---------------------------------------------
+    # (I'll hold off on the write until I see what I actually need.)
     return
 
 
