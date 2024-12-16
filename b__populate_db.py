@@ -31,9 +31,9 @@ def load_data() -> dict:
 
 def build_records(api_data: dict) -> list:
     """
-    Builds records.
+    Builds records, a list of lists, from the api_data.
     Each doc in api_data['items']['docs'] has most of the following fields: ['dateCreated', 'abstract', 'json_uri', 'keyword', 'object_type', 'pid', 'primary_title', 'uri']
-
+        - 'dateCreated' and 'abstract' are only in some of the docs.
     All fields will be included in the record as-is, except for:
         - 'abstract', which is a single-item list and will be converted to a string.
         - 'keywords', which is a list and will be converted to a json-string.
@@ -78,37 +78,102 @@ def build_records(api_data: dict) -> list:
     log.debug(f'first record, ``{pprint.pformat(records[0])}``')
     return records
 
+    ## end def build_records()
+
+
+# def create_db_and_table() -> bool:
+#     """
+#     Creates db and table if it does not exist.
+#     Fields will be: ['abstract', 'json_uri', 'keywords', 'object_type', 'pid', 'primary_title', 'uri']
+#     The primary key will be 'pid', which is a string.
+#     All the other fields are strings.
+#     The field 'keywords' is a JSON list of strings, so will be stored as a JSON field.
+#     Returns True if the table was created, False otherwise.
+#     """
+#     log.debug('starting create_db_and_table()')
+#     db_path = pathlib.Path(DB_PATH)
+#     log.debug(f'db_path: {db_path}')
+#     db_path_absolute = db_path.resolve()
+#     log.debug(f'db_path_absolute: {db_path_absolute}')
+#     db_path_absolute.parent.mkdir(parents=True, exist_ok=True)
+#     conn = sqlite3.connect(db_path_absolute)
+#     cursor = conn.cursor()
+#     ## check if table exists ----------------------------------------
+#     cursor.execute("""
+#         SELECT name FROM sqlite_master
+#         WHERE type='table' AND name='amciv_thesdiss_collection'
+#     """)
+#     table_exists = cursor.fetchone() is not None
+#     if table_exists:
+#         log.debug('table already exists.')
+#         conn.close()
+#         return False  # Table was not created
+#     ## otherwise reate the table ------------------------------------
+#     log.debug('Creating table...')
+#     cursor.execute("""
+#         CREATE TABLE amciv_thesdiss_collection (
+#             abstract TEXT,
+#             dateCreated TEXT,
+#             json_uri TEXT,
+#             keywords JSON,
+#             object_type TEXT,
+#             pid TEXT PRIMARY KEY,
+#             primary_title TEXT,
+#             uri TEXT
+#         )
+#     """)
+#     conn.commit()
+#     conn.close()
+#     log.debug('table created.')
+#     return True
+
 
 def create_db_and_table() -> None:
     """
-    Creates db and table.
+    Creates db and table if it does not exist.
     Fields will be: ['abstract', 'json_uri', 'keywords', 'object_type', 'pid', 'primary_title', 'uri']
     The primary key will be 'pid', which is a string.
     All the other fields are strings.
-    The field 'keyword' is a json-list of strings, so will be stored as a json-field
-    Called by manage_sqlite_populate().
+    The field 'keywords' is a JSON list of strings, so will be stored as a JSON field.
+    Returns True if the table was created, False otherwise.
     """
     log.debug('starting create_db_and_table()')
+    ## setup paths --------------------------------------------------
     db_path = pathlib.Path(DB_PATH)
-    db_path.touch(exist_ok=True)
     log.debug(f'db_path: {db_path}')
     db_path_absolute = db_path.resolve()
     log.debug(f'db_path_absolute: {db_path_absolute}')
+    db_path_absolute.parent.mkdir(parents=True, exist_ok=True)
+    ## access the db ------------------------------------------------
     conn = sqlite3.connect(db_path_absolute)
     cursor = conn.cursor()
+    ## check if table exists ----------------------------------------
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS amciv_thesdiss_collection (
-            abstract TEXT,
-            dateCreated TEXT,
-            json_uri TEXT,
-            keywords JSON,
-            object_type TEXT,
-            pid TEXT PRIMARY KEY,
-            primary_title TEXT,
-            uri TEXT
-        )""")
-    conn.commit()
-    conn.close()
+        SELECT name FROM sqlite_master
+        WHERE type='table' AND name='amciv_thesdiss_collection'
+    """)
+    # table_exists = cursor.fetchone() is not None
+    # if table_exists:
+    if cursor.fetchone() is not None:
+        log.debug('table already exists.')
+        conn.close()
+    else:  ## create the table --------------------------------------
+        log.debug('Creating table...')
+        cursor.execute("""
+            CREATE TABLE amciv_thesdiss_collection (
+                abstract TEXT,
+                dateCreated TEXT,
+                json_uri TEXT,
+                keywords JSON,
+                object_type TEXT,
+                pid TEXT PRIMARY KEY,
+                primary_title TEXT,
+                uri TEXT
+            )
+        """)
+        conn.commit()
+        conn.close()
+        log.debug('table created.')
     return
 
 
