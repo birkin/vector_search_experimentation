@@ -24,17 +24,20 @@ BDR_COLLECTION_API_ROOT: str = 'https://repository.library.brown.edu/api/collect
 OUTPUT_DATA_DIR: str = '../data/'
 
 
-def get_data() -> None:
+def get_data() -> dict:
     """
-    Grabs the collection-level AmCiv Theses and Dissertations data from the BDR API.
-    For all the 94 docs, it returns: ['abstract', 'json_uri', 'keyword', 'object_type', 'pid', 'primary_title', 'uri']
-    For now I can use the abstract, pid, and title.
+    Hit's the collection-API.
     """
-    ## grab data ----------------------------------------------------
     amciv_collection_api_url: str = f'{BDR_COLLECTION_API_ROOT}{AMCIV_THESDISS_COLLECTION_ID}/'
     log.debug(f'amciv_collection_api_url: {amciv_collection_api_url}')
     jdict: dict = httpx.get(amciv_collection_api_url).json()
-    ## inspect it ---------------------------------------------------
+    return jdict
+
+
+def inspect_data(jdict: dict) -> None:
+    """
+    Inspects the data.
+    """
     sorted_collection_keys = sorted(jdict.keys())
     log.debug(f'sorted_collection_keys: {sorted_collection_keys}')
     sorted_item_keys = sorted(jdict['items'].keys())
@@ -43,7 +46,13 @@ def get_data() -> None:
     sorted_doc_keys = sorted(doc_example.keys())
     log.debug(f'sorted_doc_keys: {sorted_doc_keys}')
     log.debug(f'doc_example: {pprint.pformat(doc_example)}')
-    ## write data to file -------------------------------------------
+    return
+
+
+def output_data(jdict: dict) -> None:
+    """
+    Outputs the data.
+    """
     output_path = pathlib.Path(OUTPUT_DATA_DIR) / 'amciv_thesdiss_collection.json'
     log.debug(f'output_path: {output_path}')
     output_absolute_path = output_path.resolve()
@@ -55,6 +64,21 @@ def get_data() -> None:
     return
 
 
+def run_manager() -> None:
+    """
+    Grabs the collection-level AmCiv Theses and Dissertations data from the BDR API.
+    For all the 94 docs, it returns: ['abstract', 'json_uri', 'keyword', 'object_type', 'pid', 'primary_title', 'uri']
+    For now I can use the abstract, pid, and title.
+    """
+    ## grab data ----------------------------------------------------
+    jdict: dict = get_data()
+    ## inspect it ---------------------------------------------------
+    inspect_data(jdict)
+    ## write data to file -------------------------------------------
+    output_data(jdict)
+    return
+
+
 ## add dundermain
 if __name__ == '__main__':
-    get_data()
+    run_manager()
