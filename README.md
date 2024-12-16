@@ -96,7 +96,16 @@ Code [here](https://github.com/birkin/vector_search_experimentation/blob/main/b_
 
 As an aside, a while ago I watched a video of someone doing something wih sqlite, and the person was able to click right on the db-file and view it from vscode. 
 
-Just did an extension-search, and there are a _bunch_ of such extensions. I just installed the free [SQLite Viewer](https://marketplace.visualstudio.com/items?itemName=qwtel.sqlite-viewer), and despite it being read-only and having a subtle ad, am enjoying being able to easily skim the contents of the db.
+Just did an extension-search, and there are a _bunch_ of such extensions. I just installed the free [SQLite Viewer](https://marketplace.visualstudio.com/items?itemName=qwtel.sqlite-viewer), and am evaluating it. 
+
+Downsides: 
+- read-only
+- a subtle ad (I hate ads, but this isn't intrusive)
+
+Upsides: 
+- really enjoying being able to easily skim the contents of the db.
+
+Hmm... can I use it to query the db via sql? I see filters where I can type in text, but not where I can type sql queries.
 
 ---
 
@@ -107,7 +116,46 @@ FTS5 is an extension for SQLite that provides full-text search capabilities ("FT
 
 In my iterative fashion, I'll copy the original table and then perform the update.
 
+Code [here](https://github.com/birkin/vector_search_experimentation/blob/main/c__add_FTS.py).
 
+Not fully working yet.
+
+I can run these queries:
+
+```
+sqlite> 
+sqlite> select rowid from fts_amciv_abstracts where abstract match 'poetry' limit 10;
+28
+sqlite> 
+sqlite> select rowid from fts_amciv_abstracts where abstract match 'race' limit 10;
+2
+8
+13
+14
+15
+20
+25
+26
+30
+37
+sqlite> 
+```
+
+...and then from inspecting the regular table see that, eg, id `28` is about `poetry` -- but the instructions make it seem I should be able to query like:
+
+```
+sqlite> select rowid, abstract, rank from fts_amciv_abstracts where abstract match 'race' limit 10;
+```
+
+...but that yields:
+
+```
+Runtime error: no such column: T.id
+```
+
+Gotta track that down, but am pausing.
+
+(After I get this working, the next step is the embeddings and vectors!)
 
 ---
 
