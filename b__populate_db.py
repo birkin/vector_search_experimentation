@@ -128,7 +128,7 @@ def build_records(api_data: dict) -> list:
 #     return True
 
 
-def create_db_and_table() -> None:
+def create_db_and_table() -> bool:
     """
     Creates db and table if it does not exist.
     Fields will be: ['abstract', 'json_uri', 'keywords', 'object_type', 'pid', 'primary_title', 'uri']
@@ -148,13 +148,13 @@ def create_db_and_table() -> None:
     conn = sqlite3.connect(db_path_absolute)
     cursor = conn.cursor()
     ## check if table exists ----------------------------------------
+    table_created: bool = False
     cursor.execute("""
         SELECT name FROM sqlite_master
         WHERE type='table' AND name='amciv_thesdiss_collection'
     """)
-    # table_exists = cursor.fetchone() is not None
-    # if table_exists:
-    if cursor.fetchone() is not None:
+    table_exists = cursor.fetchone() is not None
+    if table_exists:
         log.debug('table already exists.')
         conn.close()
     else:  ## create the table --------------------------------------
@@ -173,14 +173,62 @@ def create_db_and_table() -> None:
         """)
         conn.commit()
         conn.close()
+        table_created: bool = True
         log.debug('table created.')
+    log.debug(f'table_created, ``{table_created}``')
+    return table_created
+
+
+def populate_db(records: list) -> None:
+    """
+    Populates the table with the records.
+    Only called if the table has just been created.
+    Called by manage_sqlite_populate().
+    """
+    log.debug('starting populate_db()')
+    db_path = pathlib.Path(DB_PATH)
+    db_path_absolute = db_path.resolve()
+    conn = sqlite3.connect(db_path_absolute)
+    cursor = conn.cursor()
+    for record in records:
+        cursor.execute(
+            """
+            INSERT INTO amciv_thesdiss_collection (
+                abstract,
+                dateCreated,
+                json_uri,
+                keywords,
+                object_type,
+                pid,
+                primary_title,
+                uri
+            ) VALUES (
+                :abstract,
+                :dateCreated,
+                :json_uri,
+                :keywords,
+                :object_type,
+                :pid,
+                :primary_title,
+                :uri
+            )
+        """,
+            record,
+        )
+    conn.commit()
+    conn.close()
+    log.debug('db populated')
     return
+
+    ## end def populate_db()
 
 
 def manage_sqlite_populate():
     api_data: dict = load_data()
     records: list = build_records(api_data)
-    create_db_and_table()
+    table_created: bool = create_db_and_table()
+    if table_created:
+        populate_db(records)
     pass
 
 
